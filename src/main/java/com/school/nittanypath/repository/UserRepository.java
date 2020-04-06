@@ -15,7 +15,7 @@ import java.util.Map;
 @Repository
 @Transactional
 public interface UserRepository extends JpaRepository<UserDto, Integer> {
-    @Query(value = "select email, password FROM canvaspath.user_dto where email = :email and password = :password", nativeQuery = true)
-    List<UserDto> findByEmail(@Param("email") String email, @Param("password") String password);
+    @Query(value = "select * FROM canvaspath.user_dto where email = :email", nativeQuery = true)
+    List<UserDto> findByEmail(@Param("email") String email);
 
 }

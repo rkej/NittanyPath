@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
-
+import org.mindrot.jbcrypt.BCrypt;
 @RestController
 @EnableJpaRepositories("com.school.nittanypath.repository")
 public class LoginController{
@@ -23,13 +23,20 @@ public class LoginController{
     ResponseEntity<String> login(@RequestParam("email") String email, @RequestParam("password") String password, UserRepository  repo) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String encoded_password = encoder.encode(password);
-        List<UserDto> login = userRepo.findByEmail(email, encoded_password);
-        if (login.size() == 1) {
+        List<UserDto> login = userRepo.findByEmail(email);
+        UserDto user = login.get(0);
+        System.out.println(BCrypt.hashpw(password, BCrypt.gensalt()));
+        boolean bool = encoder.matches(password, user.getPassword());
+
+        if ((BCrypt.checkpw(password, user.getPassword()))){
             return new ResponseEntity<>("Successful log in!", HttpStatus.OK);
         }
         else{
             return new ResponseEntity<>( "Login Failed", HttpStatus.NOT_FOUND );
         }
+
+    }
+    public void hashpws(){
 
     }
 }

@@ -15,7 +15,7 @@ public class UserDto {
     private String password;
     @NotNull
     @NotEmpty
-    
+
     public String getPassword() {
         return password;
     }
@@ -28,8 +28,10 @@ public class UserDto {
     public void setPassword(final String password) {
         this.password = password;
     }
+
     public UserDto(String email, String password){
         this.email=email;
         this.password=password;
     }
+    public UserDto(){}
 }

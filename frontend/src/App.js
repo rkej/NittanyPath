@@ -51,10 +51,10 @@ onFormSubmit = event => {
   render(){
   return <div><style>{'body { background-color: #491d70; }'}
     </style>
-      <img src = {background} style={{width:"75%",height:"105.2%", left:"0px", position: "absolute"}}/>
-      <Jumbotron fluid style={{marginLeft: "75%", marginTop: "-2.5%", backgroundColor: "#491d70" }}>
+      <img src = {background} style={{width:"70%",height:"105.2%", left:"0px", position: "absolute"}}/>
+      <Jumbotron fluid style={{marginLeft: "70%", backgroundColor: "#491d70", marginTop: "-2.5%", paddingRight: "10px"}}>
         <Container fluid><br></br><br></br>
-          <h2 className="display-3" style={{color: "white"}}>CanvasPath</h2><br></br>
+  <h1 className="display-3" style={{color: "white", fontSize: "50px"}}>CanvasPath</h1><br></br>
           <p className="lead" style={{color: "white", fontSize: "20px"}}>Sign in to your online learning tool!</p><br></br>
           <Form>
                         <FormGroup>
