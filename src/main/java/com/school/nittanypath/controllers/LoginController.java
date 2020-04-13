@@ -29,14 +29,17 @@ public class LoginController{
         boolean bool = encoder.matches(password, user.getPassword());
 
         if ((BCrypt.checkpw(password, user.getPassword()))){
-            return new ResponseEntity<>("Successful log in!", HttpStatus.OK);
+            if(userRepo.studentByEmail(email).size() > 0){
+                return new ResponseEntity<>("Student", HttpStatus.OK);
+            }
+            else if(userRepo.profByEmail(email).size() > 0) {
+                return new ResponseEntity<>("Professor", HttpStatus.OK);
+            }
         }
         else{
             return new ResponseEntity<>( "Login Failed", HttpStatus.NOT_FOUND );
         }
-
+        return new ResponseEntity<>( "Login Failed", HttpStatus.NOT_FOUND );
     }
-    public void hashpws(){
 
-    }
 }
