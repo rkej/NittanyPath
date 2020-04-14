@@ -29,3 +29,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Jupyter Notebooks ###
+/data/Untitled.ipynb
+/data/Password encryption.ipynb
+
+### npm ###
+/frontend/node_modules
