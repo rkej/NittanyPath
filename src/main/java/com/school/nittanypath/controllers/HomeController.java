@@ -11,4 +11,11 @@ public class HomeController {
     public String signin_cli() {
         return "index.html";
     }
+    @GetMapping(value = "/home{email}")
+    public String home_cli() { return "index.html";}
+    @GetMapping(value = "/dashTA{email}")
+    public String dashTA() { return "index.html";}
+    @GetMapping(value = "/dashProf{email}")
+    public String dashProf() { return "index.html";}
+
 }

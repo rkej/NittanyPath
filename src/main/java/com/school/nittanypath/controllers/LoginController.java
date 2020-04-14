@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
@@ -46,5 +43,11 @@ public class LoginController{
         }
         return new ResponseEntity<>( "Login Failed", HttpStatus.NOT_FOUND );
     }
+    @RequestMapping(value = "api/getCourseInfo", method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    List<Object> get_course_info(@RequestParam("email") String email) {
+        return userRepo.getCourseInformation(email);
+    }
+
 
 }

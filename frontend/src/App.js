@@ -42,8 +42,16 @@ onFormSubmit = event => {
     })
     .then(response=>{
         if(this.state.error != 1){
-            this.props.history.push(`home?${this.state.email}`);}
+            if(response.data == "Student"){
+                this.props.history.push(`home?${this.state.email}`);}
+            if(response.data == "TA"){
+                this.props.history.push(`dashTA?${this.state.email}`);
+            }
+            if(response.data == "Professor"){
+                this.props.history.push(`dashProf?${this.state.email}`);
+            }
     }
+}
     )
 }
 
