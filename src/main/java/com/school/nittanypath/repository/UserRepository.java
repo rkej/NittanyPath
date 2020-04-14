@@ -21,4 +21,6 @@ public interface UserRepository extends JpaRepository<UserDto, Integer> {
     List<String> studentByEmail(@Param("email") String email);
     @Query(value = "select * FROM canvaspath.prof_dto where email = :email", nativeQuery = true)
     List<String> profByEmail(@Param("email") String email);
+    @Query(value = "select Teaching_Team_ID FROM canvaspath.stud_dto where email = :email", nativeQuery = true)
+    String isTA(@Param("email") String email);
 }

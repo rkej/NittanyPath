@@ -84,7 +84,7 @@ export default class Home extends Component {
     </Collapse>
          </Navbar>
          <br/><br/>
-         <CardDeck style = {{width: "80%", margin: "auto"}}>
+         <CardDeck style = {{width: "90%", margin: "auto"}}>
       <Card>
         <CardImg top width="100%" src={blue} />
         <CardBody>
@@ -112,7 +112,15 @@ export default class Home extends Component {
           <Button color = "primary">View</Button>
         </CardBody>
       </Card>
-      
+      <Card>
+        <CardImg top width="100%" src={yellow}/>
+        <CardBody>
+          <CardTitle>Card title</CardTitle>
+          <CardSubtitle>Card subtitle</CardSubtitle>
+          <CardText>This is a wider card with supporting text below as a natural lead-in to additional content. </CardText>
+          <Button color = "primary">View</Button>
+        </CardBody>
+      </Card>
     </CardDeck>
     <br/><br/><br/>
     </div>

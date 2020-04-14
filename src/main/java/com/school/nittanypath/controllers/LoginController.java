@@ -30,7 +30,12 @@ public class LoginController{
 
         if ((BCrypt.checkpw(password, user.getPassword()))){
             if(userRepo.studentByEmail(email).size() > 0){
-                return new ResponseEntity<>("Student", HttpStatus.OK);
+                if(userRepo.isTA(email).equals("")) {
+                    return new ResponseEntity<>("Student", HttpStatus.OK);
+                }
+                else{
+                    return new ResponseEntity<>("TA", HttpStatus.OK);
+                }
             }
             else if(userRepo.profByEmail(email).size() > 0) {
                 return new ResponseEntity<>("Professor", HttpStatus.OK);
