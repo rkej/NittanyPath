@@ -10,7 +10,8 @@ class App extends Component {
     this.state = {
         email: '',
         password: '',
-        error: 0
+        error: 0, 
+        team_id: 0
     };
     this.handleInputChange = this.handleInputChange.bind(this);
 }
@@ -45,6 +46,13 @@ onFormSubmit = event => {
             if(response.data == "Student"){
                 this.props.history.push(`home?${this.state.email}`);}
             if(response.data == "TA"){
+                axios.post('/api/getTATeamID', null, {
+                    params: {
+                      email: this.state.email
+                    }
+                  })
+                  .then(response => response.data)
+                    .then(json => this.setState({team_id: json}))
                 this.props.history.push(`dashTA?${this.state.email}`);
             }
             if(response.data == "Professor"){

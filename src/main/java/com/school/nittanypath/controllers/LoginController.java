@@ -26,12 +26,16 @@ public class LoginController{
         boolean bool = encoder.matches(password, user.getPassword());
 
         if ((BCrypt.checkpw(password, user.getPassword()))){
-            if(userRepo.studentByEmail(email).size() > 0){
-                if(userRepo.isTA(email).equals("")) {
-                    return new ResponseEntity<>("Student", HttpStatus.OK);
+            if(userRepo.studentByEmail(email).size() > 0) {
+                try {
+                    if (userRepo.isTA(email).equals("")) {
+                        return new ResponseEntity<>("Student", HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>("TA", HttpStatus.OK);
+                    }
                 }
-                else{
-                    return new ResponseEntity<>("TA", HttpStatus.OK);
+                catch(NullPointerException ne){
+                    return new ResponseEntity<>("Student", HttpStatus.OK);
                 }
             }
             else if(userRepo.profByEmail(email).size() > 0) {
@@ -48,6 +52,15 @@ public class LoginController{
     List<Object> get_course_info(@RequestParam("email") String email) {
         return userRepo.getCourseInformation(email);
     }
-
+    @RequestMapping(value = "api/getTACourseInfo", method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    String get_TA_course_info(@RequestParam("team_id") Integer team_id) {
+        return userRepo.getTACourseInformation(team_id);
+    }
+    @RequestMapping(value = "api/getTATeamID", method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    String get_TA_team_id(@RequestParam("email") String email) {
+        return userRepo.isTA(email);
+    }
 
 }
