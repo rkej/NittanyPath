@@ -1,4 +1,5 @@
 package com.school.nittanypath.repository;
+import com.school.nittanypath.dto.GradingDto;
 import com.school.nittanypath.dto.UserDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,4 +31,5 @@ public interface UserRepository extends JpaRepository<UserDto, Integer> {
     List<Object> getProfInfo(@Param("course") String course);
     @Query(value = "SELECT Drop_deadline FROM canvaspath.course_dto where Courses = :course", nativeQuery = true)
     String getDropdead(@Param("course") String course);
+
 }

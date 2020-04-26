@@ -1,6 +1,8 @@
 package com.school.nittanypath.controllers;
 
+import com.school.nittanypath.dto.GradingDto;
 import com.school.nittanypath.dto.UserDto;
+import com.school.nittanypath.repository.GradeRepository;
 import com.school.nittanypath.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -14,7 +16,8 @@ import org.mindrot.jbcrypt.BCrypt;
 @EnableJpaRepositories("com.school.nittanypath.repository")
 public class LoginController{
     @Autowired UserRepository userRepo;
-
+    @Autowired
+    GradeRepository graderepo;
     @PostMapping(value = "/api/signin")
     public @ResponseBody
     ResponseEntity<String> login(@RequestParam("email") String email, @RequestParam("password") String password, UserRepository  repo) {
@@ -69,6 +72,11 @@ public class LoginController{
         List<Object> list1 = userRepo.getProfInfo(course);
         list1.add(userRepo.getDropdead(course));
         return list1;
+    }
+    @RequestMapping(value = "api/getAssInfo",  method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    List<GradingDto> get_prof_data(@RequestParam("course") String  course, @RequestParam("email") String  email) {
+        return graderepo.getAssInfo(course, email);
     }
 
 }

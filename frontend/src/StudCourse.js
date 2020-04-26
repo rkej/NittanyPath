@@ -10,7 +10,7 @@ import {
     UncontrolledDropdown, 
     DropdownToggle,
     DropdownMenu, 
-    DropdownItem, Card, Button, CardImg, CardTitle, CardText, CardDeck, Jumbotron, TabContent, TabPane, Row, Col,
+    DropdownItem, Card, Button,CardImg, CardTitle, CardText, CardDeck, Jumbotron, TabContent, TabPane, Row, Col, ListGroup, ListGroupItem,
     CardSubtitle, CardBody,
     NavLink } from 'reactstrap';
 import axios from 'axios';
@@ -29,14 +29,18 @@ export default class StudCourse extends Component {
       course: urlSearchParams.get("course"),
       teaching: "",
       activeTab: 1,
-
-      team_id: 0
+      grading: [],
+      team_id: 0, 
+      gh: false
     };
     // this.onAdd.bind(this)
-    this.getTACourseinfo.bind(this);
 }
     toggleTab(tab) {
         this.setState({activeTab: tab});
+    }
+    togglecourse() {
+        const{gh} = this.state
+        this.setState({gh: !gh})
     }
     getActive = (tab) => {
         if(this.state.activeTab === tab) {
@@ -72,30 +76,52 @@ export default class StudCourse extends Component {
           }
       }).then(response => response.data)
       .then(json => this.setState({profdata: json}))
-  }
-  
-  getTACourseinfo(){
-    axios.post('/api/getTACourseInfo', null, {
-        params: {
-          team_id: this.state.team_id
-        }
+      axios.post('api/getAssInfo', null, {
+          params: {
+              email: this.state.email, 
+              course: this.state.course
+          }
       })
       .then(response => response.data)
-      .then(json => this.setState({teaching: json}))
+      .then(json => this.setState({grading: json}))
   }
+  
+  
 
   
   render() {
+      const {gh} = this.state
     // this.getTACourseinfo();
     var coursedata = this.state.coursedata[0]
     var profdata = this.state.profdata[0]
     var drop = this.state.profdata[1]
     var ind = coursedata.indexOf(this.state.course)
     var teaching = this.state.teaching
+    var tr = this.state.gh
     var href_home = "dashTA?" + this.state.email
     var href_course1 = "studcourse?course=" + coursedata[0] + "&email=" + this.state.email
     var href_course2 = "studcourse?course=" + coursedata[4] + "&email=" + this.state.email
     var href_course3 = "studcourse?course=" + coursedata[8] + "&email=" + this.state.email
+    var grading = this.state.grading
+    var ass = grading.map(function(squad){
+    return (<div><ListGroupItem action>Assignment {squad.hw_num}</ListGroupItem>
+    <Collapse isOpen={gh}>
+    <Card>
+      <CardBody>
+      {squad.hw_details}
+      </CardBody>
+    </Card>
+  </Collapse></div>)})
+  var exams = grading.map(function(squad){
+    return (<div><ListGroupItem action>Exam {squad.exam_num}</ListGroupItem>
+    <Collapse isOpen={gh}>
+    <Card>
+      <CardBody>
+      {squad.exam_details}
+      </CardBody>
+    </Card>
+  </Collapse></div>)
+    });
     return <div style = {{backgroundColor: "#f9f9f9"}}> <Navbar style = {{backgroundColor: "#491d70"}} dark expand ="md">
     <NavbarBrand href = {href_home}>NittanyPath</NavbarBrand>
     <NavbarToggler onClick={this.toggle}/>
@@ -128,8 +154,7 @@ export default class StudCourse extends Component {
         </Nav> 
         </Collapse>
          </Navbar>
-         <br/>
-         <Nav tabs={true}>
+         <Nav tabs={true} style = {{paddingTop: "1%"}}>
           <NavItem>
             <NavLink
               className={this.getActive(1)}
@@ -161,16 +186,34 @@ export default class StudCourse extends Component {
         </Nav>
         <TabContent activeTab={this.state.activeTab}>
           <TabPane tabId={1}>
-          <Jumbotron style = {{paddingTop: "2rem", paddingRight: "2rem", paddingBottom: "5rem", paddingLeft: "2rem"}}>
+          <Jumbotron style = {{paddingTop: "2rem", paddingRight: "2rem", paddingBottom: "6rem", paddingLeft: "2rem"}}>
   <h3 >{coursedata[ind]}: {coursedata[ind + 1]}  - Section {coursedata[3]}</h3>
   <p className="lead">This is a {coursedata[ind + 2]} Drop Deadline is: {drop}</p>
   <p><h5><strong>Professor's Information:</strong></h5></p>
         <hr className="my-2" />
-  <p><strong>Name:</strong> {profdata[0]}<br/><strong>Email:</strong> {profdata[1]}<br/><strong>Office:</strong> {profdata[2]}</p><br/><br/><br/><br/><br/><br/><br/>
+  <p><strong>Name:</strong> {profdata[0]}<br/><strong>Email:</strong> {profdata[1]}<br/><strong>Office:</strong> {profdata[2]}</p><br/><br/><br/><br/><br/><br/>
       </Jumbotron>
           </TabPane>
           <TabPane tabId={2}>
             History
+          </TabPane>
+          
+          <TabPane tabId = {3}>
+              <Jumbotron style = {{paddingTop: "1rem", paddingRight: "2rem", paddingBottom: "6rem", paddingLeft: "1rem"}}>
+              <Button color="primary" onClick={() => this.togglecourse()} style={{ marginBottom: '1rem' }}>View Descriptions</Button>
+                  <h5>Assignments</h5><hr className="my-2"></hr>
+                  <p>
+                  <ListGroup>
+                    {ass}
+                  </ListGroup></p>
+                  <h5>Exams</h5><hr className="my-2"></hr>
+                  <p>
+                  <ListGroup>
+                    {exams}
+                  </ListGroup></p>
+
+      
+      </Jumbotron>
           </TabPane>
         </TabContent>
          </div>
