@@ -22,8 +22,12 @@ public interface UserRepository extends JpaRepository<UserDto, Integer> {
     List<String> profByEmail(@Param("email") String email);
     @Query(value = "select Teaching_Team_ID FROM canvaspath.stud_dto where email = :email", nativeQuery = true)
     String isTA(@Param("email") String email);
-    @Query(value = "SELECT Courses_1,Course_1_Name, Course_1_Details, Course_1_Section, Courses_2,Course_2_Name, Course_2_Details, Course_2_Section, Courses_3,Course_3_Name, Course_3_Details, Course_3_Section from stud_dto WHERE email = :email", nativeQuery = true)
+    @Query(value = "SELECT Courses_1,Course_1_Name, Course_1_Details, Course_1_Section, Courses_2,Course_2_Name, Course_2_Details, Course_2_Section, Courses_3,Course_3_Name, Course_3_Details, Course_3_Section from canvaspath.stud_dto WHERE email = :email", nativeQuery = true)
     List<Object> getCourseInformation(@Param("email") String email);
-    @Query(value = "SELECT Teaching FROM prof_dto where Teaching_Team_ID = :team_id", nativeQuery = true)
+    @Query(value = "SELECT Teaching FROM canvaspath.prof_dto where Teaching_Team_ID = :team_id", nativeQuery = true)
     String getTACourseInformation(@Param("team_id") Integer team_id);
+    @Query(value = "SELECT Name, Email, Office FROM canvaspath.prof_dto where Teaching = :course", nativeQuery = true)
+    List<Object> getProfInfo(@Param("course") String course);
+    @Query(value = "SELECT Drop_deadline FROM canvaspath.course_dto where Courses = :course", nativeQuery = true)
+    String getDropdead(@Param("course") String course);
 }

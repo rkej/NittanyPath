@@ -63,4 +63,12 @@ public class LoginController{
         return userRepo.isTA(email);
     }
 
+    @RequestMapping(value = "api/getProfInfo",  method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    List<Object> get_prof_data(@RequestParam("course") String  course) {
+        List<Object> list1 = userRepo.getProfInfo(course);
+        list1.add(userRepo.getDropdead(course));
+        return list1;
+    }
+
 }

@@ -52,12 +52,12 @@ export default class Home extends Component {
   
   render() {
     return <div style = {{backgroundColor: "#f9f9f9"}}> <Navbar style = {{backgroundColor: "#491d70"}} dark expand ="md">
-    <NavbarBrand href = "/dashboard">CanvasPath</NavbarBrand>
+    <NavbarBrand href = "/dashboard">NittanyPath</NavbarBrand>
     <NavbarToggler onClick={this.toggle}/>
     <Collapse isOpen={this.state.isOpen} navbar>
         <Nav className = "ml-auto" navbar>
             <NavItem>
-                <NavLink href = "/dashboard">Home</NavLink>
+                <NavLink href = "/dashboard">Dashboard</NavLink>
             </NavItem>
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret>

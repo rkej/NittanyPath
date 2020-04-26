@@ -40,23 +40,21 @@ export default class Home extends Component {
     })
     .then(response => response.data)
     .then(json => this.setState({coursedata: json}))
-    
-    
   }
   
   
   render() {
     var coursedata = this.state.coursedata[0]
-    var href_course1 = "studcourse?" + coursedata[0] + "?" + this.state.email
-    var href_course2 = "studcourse?" + coursedata[4] + "?" + this.state.email
-    var href_course3 = "studcourse?" + coursedata[8] + "?" + this.state.email
+    var href_course1 = "studcourse?" + coursedata[0] + "&email=" + this.state.email
+    var href_course2 = "studcourse?" + coursedata[4] + "&email=" + this.state.email
+    var href_course3 = "studcourse?" + coursedata[8] + "&email=" + this.state.email
     return <div style = {{backgroundColor: "#f9f9f9"}}> <Navbar style = {{backgroundColor: "#491d70"}} dark expand ="md">
-    <NavbarBrand href = "/dashboard">CanvasPath</NavbarBrand>
+    <NavbarBrand href = "/dashboard">NittanyPath</NavbarBrand>
     <NavbarToggler onClick={this.toggle}/>
     <Collapse isOpen={this.state.isOpen} navbar>
         <Nav className = "ml-auto" navbar>
             <NavItem>
-                <NavLink href = "/dashboard">Home</NavLink>
+                <NavLink href = "/dashboard">Dashboard</NavLink>
             </NavItem>
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret>

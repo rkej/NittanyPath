@@ -5,6 +5,7 @@ import App from './App';
 import Home from './Home';
 import TAHome from './TAHome'
 import ProfHome from './ProfHome'
+import StudCourse from './StudCourse'
 import { Route, BrowserRouter as Router } from 'react-router-dom';
 
 import * as serviceWorker from './serviceWorker';
@@ -17,6 +18,7 @@ const routing = (
       <Route path='/home' exact ={false} component={Home} />
       <Route path='/dashTA' exact ={false} component={TAHome} />
       <Route path='/dashProf' exact ={false} component={ProfHome} />
+      <Route path='/studcourse' exact ={false} component={StudCourse} />
     </div>
   </Router>);
 
