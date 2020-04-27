@@ -119,4 +119,15 @@ public class LoginController{
         forumrepo.insertPost(course, post_email, post);
         return getPosts(course);
     }
+    @RequestMapping(value = "api/getStudentInfo",  method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    List<Object> getStudentInfo(@RequestParam("email") String email) {
+        return userRepo.studentByEmail(email);
+    }
+    @RequestMapping(value = "api/changePassword",  method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    void changepw(@RequestParam("email") String email, @RequestParam("password") String password) {
+        String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
+        userRepo.changepw(email, hashed);
+    }
 }
