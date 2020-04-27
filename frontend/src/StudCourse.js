@@ -10,7 +10,7 @@ import {
     UncontrolledDropdown, 
     DropdownToggle,
     DropdownMenu, 
-    DropdownItem, Card, Button,CardImg, CardTitle, CardText, CardDeck, Jumbotron, TabContent, TabPane, Row, Col, ListGroup, ListGroupItem,
+    DropdownItem, Card, Button,Table, CardHeader, CardText, CardDeck, Jumbotron, TabContent, TabPane, Row, Col, ListGroup, ListGroupItem,
     CardSubtitle, CardBody,
     NavLink } from 'reactstrap';
 import axios from 'axios';
@@ -31,13 +31,21 @@ export default class StudCourse extends Component {
       activeTab: 1,
       grading: [],
       team_id: 0, 
-      gh: false
+      grades: [],
+      gh: false, 
+      hw_avg: [], 
+      exam_avg: [], 
+      hw: 0, 
+      ex: 0
     };
+    // this.getexamavg.bind(this)
     // this.onAdd.bind(this)
 }
     toggleTab(tab) {
         this.setState({activeTab: tab});
     }
+    
+   
     togglecourse() {
         const{gh} = this.state
         this.setState({gh: !gh})
@@ -47,6 +55,7 @@ export default class StudCourse extends Component {
           return 'active';
         }
     }
+
 
   componentDidMount(props){
     axios.post('/api/getCourseInfo', null, {
@@ -83,8 +92,35 @@ export default class StudCourse extends Component {
           }
       })
       .then(response => response.data)
-      .then(json => this.setState({grading: json}))
-  }
+      .then(json => this.setState({grading: json}, () => {
+        this.state.grading.forEach(function(x, i){
+          console.log(x)
+          var course1 = x.course 
+          var hw_num1= x.hw_num
+          let{hw_avg} = this.state
+          let{exam_avg} = this.state
+          axios.post("api/getHWAvg", null, {
+            params:{
+            course: course1, 
+            hw_num: hw_num1
+            }
+          })
+          .then(response => response.data)
+          .then(json => hw_avg.push(json), () => this.setState({hw_avg: hw_avg}))
+          axios.post("api/getExamAvg", null, {
+            params:{
+            course: x.course, 
+            exam_num: x.exam_num
+            }
+          })
+          .then(response => response.data)
+          .then(json => exam_avg.push(json), () => this.setState({exam_avg: exam_avg}))
+        }, this)
+      }))
+
+      }
+      
+  
   
   
 
@@ -98,11 +134,29 @@ export default class StudCourse extends Component {
     var ind = coursedata.indexOf(this.state.course)
     var teaching = this.state.teaching
     var tr = this.state.gh
+    var hw = this.state.hw_avg
+    var exam = this.state.exam_avg
     var href_home = "dashTA?" + this.state.email
     var href_course1 = "studcourse?course=" + coursedata[0] + "&email=" + this.state.email
     var href_course2 = "studcourse?course=" + coursedata[4] + "&email=" + this.state.email
     var href_course3 = "studcourse?course=" + coursedata[8] + "&email=" + this.state.email
     var grading = this.state.grading
+    var scorerows = grading.map(function(grade){
+        return (<tr>
+            <td>Homework {grade.hw_num}</td>
+            <td>{grade.hw_grade}</td>
+        <td>{hw[grade.hw_num - 1]}</td>
+            </tr>)
+            
+    })
+    var examrows = grading.map(function(grade){
+      return (<tr>
+          <td>Exam {grade.exam_num}</td>
+          <td>{grade.exam_grade}</td>
+      <td>{exam[grade.exam_num - 1]}</td>
+          </tr>)
+          
+  })
     var ass = grading.map(function(squad){
     return (<div><ListGroupItem action>Assignment {squad.hw_num}</ListGroupItem>
     <Collapse isOpen={gh}>
@@ -122,7 +176,7 @@ export default class StudCourse extends Component {
     </Card>
   </Collapse></div>)
     });
-    return <div style = {{backgroundColor: "#f9f9f9"}}> <Navbar style = {{backgroundColor: "#491d70"}} dark expand ="md">
+    return <div style = {{backgroundColor: "#f9f9f9"}}> <Navbar style = {{backgroundColor: "#491d70", paddingBottom: "0rem"}} dark expand ="md">
     <NavbarBrand href = {href_home}>NittanyPath</NavbarBrand>
     <NavbarToggler onClick={this.toggle}/>
     <Collapse isOpen={this.state.isOpen} navbar>
@@ -199,8 +253,8 @@ export default class StudCourse extends Component {
           </TabPane>
           
           <TabPane tabId = {3}>
-              <Jumbotron style = {{paddingTop: "1rem", paddingRight: "2rem", paddingBottom: "6rem", paddingLeft: "1rem"}}>
-              <Button color="primary" onClick={() => this.togglecourse()} style={{ marginBottom: '1rem' }}>View Descriptions</Button>
+              <Jumbotron style = {{paddingTop: "1rem", paddingRight: "2rem", paddingBottom: "14rem", paddingLeft: "1rem"}}>
+              <Button color="info" onClick={() => this.togglecourse()} style={{ marginBottom: '1rem' }}>Expand</Button>
                   <h5>Assignments</h5><hr className="my-2"></hr>
                   <p>
                   <ListGroup>
@@ -212,9 +266,34 @@ export default class StudCourse extends Component {
                     {exams}
                   </ListGroup></p>
 
-      
       </Jumbotron>
+          </TabPane>
+          <TabPane tabId = {4}>
+            <Jumbotron style = {{paddingTop: "2rem", paddingRight: "2rem", paddingBottom: "14rem", paddingLeft: "2rem"}}>
+      <Card style={{width:"50%", margin: "auto"}}>
+
+                <CardHeader><strong>Grades</strong></CardHeader>
+
+                <CardBody>
+                  
+                <Table style = {{marginBottom: "-5%"}}>
+      <thead>
+        <tr>
+          <th >Assigmnent</th>
+          <th >Score</th>
+          <th >Class Average</th>
+        </tr>
+      </thead>
+      <tbody>
+        {scorerows}
+        {examrows}
+        <br/>
+        </tbody>
+    </Table>
+
+    </CardBody></Card></Jumbotron>
+
           </TabPane>
         </TabContent>
          </div>
-  }}
+  } } 

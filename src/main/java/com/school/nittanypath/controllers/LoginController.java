@@ -78,5 +78,15 @@ public class LoginController{
     List<GradingDto> get_prof_data(@RequestParam("course") String  course, @RequestParam("email") String  email) {
         return graderepo.getAssInfo(course, email);
     }
+    @RequestMapping(value = "api/getHWAvg",  method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    float get_hw_avg(@RequestParam("course") String  course, @RequestParam("hw_num") int  hw_num) {
+        return graderepo.getHWavg(course, hw_num);
+    }
+    @RequestMapping(value = "api/getExamAvg",  method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    float get_exam_avg(@RequestParam("course") String  course, @RequestParam("exam_num") int  exam_num) {
+        return graderepo.getExamavg(course, exam_num);
+    }
 
 }
