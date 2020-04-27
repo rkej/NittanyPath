@@ -11,7 +11,7 @@ import {
     DropdownToggle,
     DropdownMenu, 
     DropdownItem, Card, Button,Table, CardHeader, CardText, CardDeck, Jumbotron, TabContent, TabPane, Row, Col, ListGroup, ListGroupItem,
-    CardSubtitle, CardBody,
+    CardSubtitle, CardBody, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, 
     NavLink } from 'reactstrap';
 import axios from 'axios';
 
@@ -21,10 +21,13 @@ export default class StudCourse extends Component {
    
   
     super(props);
+    this.toggleComment = this.toggleComment.bind(this)
+    this.getComments = this.getComments.bind(this)
     var urlSearchParams = new URLSearchParams(window.location.search);
     this.state = {
       coursedata: [[]],
       profdata: [[]], 
+
       email: urlSearchParams.get("email"), 
       course: urlSearchParams.get("course"),
       teaching: "",
@@ -36,15 +39,42 @@ export default class StudCourse extends Component {
       hw_avg: [], 
       exam_avg: [], 
       hw: 0, 
-      ex: 0
+      ex: 0, 
+      postdata: [], 
+      post: "", 
+      comment: "", 
+      modelComment: false, 
+      comments: []
     };
-    // this.getexamavg.bind(this)
+    // this.getComments.bind(this)
     // this.onAdd.bind(this)
 }
+handleInputChange(event) {
+  const target = event.target;
+  const name = target.name;
+  const value = target.value;
+  this.setState({
+      [name]: value
+  });
+}
+    toggleComment(){
+      this.setState({modelComment: !this.state.modelComment})
+    }
     toggleTab(tab) {
         this.setState({activeTab: tab});
     }
+    getComments(event){
+      this.setState({modelComment: !this.state.modelComment})
+      var grade = event.target.dataset['id']
+      axios.post("/api/getComments", null, {
+        params: {
+          post_id: grade
+        }
+      })
+      .then(response => response.data)
+      .then(json => this.setState({comments: json}))
     
+    }
    
     togglecourse() {
         const{gh} = this.state
@@ -58,6 +88,7 @@ export default class StudCourse extends Component {
 
 
   componentDidMount(props){
+
     axios.post('/api/getCourseInfo', null, {
         params: {
           email: this.state.email
@@ -116,7 +147,14 @@ export default class StudCourse extends Component {
           .then(response => response.data)
           .then(json => exam_avg.push(json), () => this.setState({exam_avg: exam_avg}))
         }, this)
+
       }))
+      axios.post("/api/getPosts", null, {
+        params: {
+          course: this.state.course
+        }
+      }).then(response => response.data)
+      .then(json => this.setState({postdata: json}))
 
       }
       
@@ -126,7 +164,13 @@ export default class StudCourse extends Component {
 
   
   render() {
+      var comments = this.state.comments
+      var commentrows = comments.map(function(comment){ return(
+      <p>{comment.comment_email} commented: <br/>{comment.comment}<hr/></p>)
+      })
       const {gh} = this.state
+      var getComments = (event) => this.getComments(event)
+      var toggleComment = () => this.toggleComment
     // this.getTACourseinfo();
     var coursedata = this.state.coursedata[0]
     var profdata = this.state.profdata[0]
@@ -141,6 +185,11 @@ export default class StudCourse extends Component {
     var href_course2 = "studcourse?course=" + coursedata[4] + "&email=" + this.state.email
     var href_course3 = "studcourse?course=" + coursedata[8] + "&email=" + this.state.email
     var grading = this.state.grading
+    var posts = this.state.postdata
+    var postrows = posts.map(function(post){
+    return (<Card style={{width:"50%", margin: "auto"}}><CardHeader>{post.post_email} posted: <br/>{post.post}</CardHeader><CardBody><Button data-id={post.post_id} color = "secondary" onClick = {getComments} size = "sm">Comments</Button></CardBody></Card>)
+    })
+    
     var scorerows = grading.map(function(grade){
         return (<tr>
             <td>Homework {grade.hw_num}</td>
@@ -176,7 +225,7 @@ export default class StudCourse extends Component {
     </Card>
   </Collapse></div>)
     });
-    return <div style = {{backgroundColor: "#f9f9f9"}}> <Navbar style = {{backgroundColor: "#491d70", paddingBottom: "0rem"}} dark expand ="md">
+    return <div style = {{backgroundColor: "#f9f9f9"}}> <Navbar style = {{backgroundColor: "#491d70"}} dark expand ="md">
     <NavbarBrand href = {href_home}>NittanyPath</NavbarBrand>
     <NavbarToggler onClick={this.toggle}/>
     <Collapse isOpen={this.state.isOpen} navbar>
@@ -217,11 +266,7 @@ export default class StudCourse extends Component {
             </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink
-              className={this.getActive(2)}
-              onClick={() => this.toggleTab(2)}>
-              Announcements
-            </NavLink>
+            
           </NavItem>
         <NavItem>
             <NavLink
@@ -235,6 +280,13 @@ export default class StudCourse extends Component {
               className={this.getActive(4)}
               onClick={() => this.toggleTab(4)}>
               Scores
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={this.getActive(5)}
+              onClick={() => this.toggleTab(5)}>
+              Forum
             </NavLink>
           </NavItem>
         </Nav>
@@ -290,10 +342,31 @@ export default class StudCourse extends Component {
         <br/>
         </tbody>
     </Table>
-
-    </CardBody></Card></Jumbotron>
-
+    </CardBody></Card></Jumbotron></TabPane>
+    <TabPane tabId = {5}>
+            <Jumbotron style = {{paddingTop: "2rem", paddingRight: "2rem", paddingBottom: "14rem", paddingLeft: "2rem"}}>
+  {postrows}</Jumbotron>
+  <Modal isOpen = {this.state.modelComment} toggle={this.toggle} className={this.props.className}>
+          <ModalBody>
+            {commentrows}
+            <Form>
+      <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+        <Input id = "comment" name = "comment" onChange = {this.handleChange} />
+      </FormGroup>
+      
+    </Form>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="success" onClick={this.onFormSubmit} >
+              Comment
+            </Button>
+            <Button color="secondary" onClick={this.toggleComment}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </Modal>
           </TabPane>
         </TabContent>
+        
          </div>
   } } 

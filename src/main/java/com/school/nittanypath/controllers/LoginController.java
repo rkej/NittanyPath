@@ -1,7 +1,11 @@
 package com.school.nittanypath.controllers;
 
+import com.school.nittanypath.dto.CommentDto;
+import com.school.nittanypath.dto.ForumDto;
 import com.school.nittanypath.dto.GradingDto;
 import com.school.nittanypath.dto.UserDto;
+import com.school.nittanypath.repository.CommentRepository;
+import com.school.nittanypath.repository.ForumRepository;
 import com.school.nittanypath.repository.GradeRepository;
 import com.school.nittanypath.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,10 @@ public class LoginController{
     @Autowired UserRepository userRepo;
     @Autowired
     GradeRepository graderepo;
+    @Autowired
+    ForumRepository forumrepo;
+    @Autowired
+    CommentRepository commentrepo;
     @PostMapping(value = "/api/signin")
     public @ResponseBody
     ResponseEntity<String> login(@RequestParam("email") String email, @RequestParam("password") String password, UserRepository  repo) {
@@ -88,5 +96,14 @@ public class LoginController{
     float get_exam_avg(@RequestParam("course") String  course, @RequestParam("exam_num") int  exam_num) {
         return graderepo.getExamavg(course, exam_num);
     }
-
+    @RequestMapping(value = "api/getPosts",  method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    List<ForumDto> getPosts(@RequestParam("course") String  course) {
+        return forumrepo.getPosts(course);
+    }
+    @RequestMapping(value = "api/getComments",  method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    List<CommentDto> getComments(@RequestParam("post_id") int  post_id) {
+        return commentrepo.getComments(post_id);
+    }
 }
