@@ -106,4 +106,17 @@ public class LoginController{
     List<CommentDto> getComments(@RequestParam("post_id") int  post_id) {
         return commentrepo.getComments(post_id);
     }
+    @RequestMapping(value = "api/addComment",  method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    List<CommentDto> addComment(@RequestParam("post_id") int post_id, @RequestParam("comment") String comment, @RequestParam("comment_email") String comment_email) {
+        commentrepo.insertComment(post_id, comment, comment_email);
+        System.out.println(commentrepo.getComments(post_id));
+        return commentrepo.getComments(post_id);
+    }
+    @RequestMapping(value = "api/addPost",  method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    List<ForumDto> addPost(@RequestParam("post") String post, @RequestParam("post_email") String post_email, @RequestParam("course") String course) {
+        forumrepo.insertPost(course, post_email, post);
+        return getPosts(course);
+    }
 }

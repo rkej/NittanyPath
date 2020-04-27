@@ -22,7 +22,10 @@ export default class StudCourse extends Component {
   
     super(props);
     this.toggleComment = this.toggleComment.bind(this)
+    this.onPostAdd = this.onPostAdd.bind(this)
     this.getComments = this.getComments.bind(this)
+    this.handleInputChange = this.handleInputChange.bind(this)
+    this.togglePost = this.togglePost.bind(this)
     var urlSearchParams = new URLSearchParams(window.location.search);
     this.state = {
       coursedata: [[]],
@@ -42,23 +45,21 @@ export default class StudCourse extends Component {
       ex: 0, 
       postdata: [], 
       post: "", 
-      comment: "", 
-      modelComment: false, 
-      comments: []
+      comment1: "", 
+      modelComment: false,
+      modelPost: false, 
+      comments: [], 
+      post_id: 1
     };
     // this.getComments.bind(this)
     // this.onAdd.bind(this)
 }
-handleInputChange(event) {
-  const target = event.target;
-  const name = target.name;
-  const value = target.value;
-  this.setState({
-      [name]: value
-  });
-}
+
     toggleComment(){
       this.setState({modelComment: !this.state.modelComment})
+    }
+    togglePost(){
+      this.setState({modelPost: !this.state.modelPost})
     }
     toggleTab(tab) {
         this.setState({activeTab: tab});
@@ -72,8 +73,8 @@ handleInputChange(event) {
         }
       })
       .then(response => response.data)
-      .then(json => this.setState({comments: json}))
-    
+      .then(json => this.setState({comments: json}, () => this.setState({post_id: grade})))
+      console.log(this.state.comments)
     }
    
     togglecourse() {
@@ -85,7 +86,41 @@ handleInputChange(event) {
           return 'active';
         }
     }
-
+    onCommentAdd = event => {
+      event.preventDefault();
+      if(this.state.comment1==''){
+          alert('Please check your input fields');
+      }
+      else{
+      axios.post('/api/addComment', null, {
+          params: {
+              post_id: this.state.post_id, 
+              comment: this.state.comment1, 
+              comment_email: this.state.email
+          }
+      })
+      .then(response => response.data)
+      .then(json => this.setState({comments: json}))
+  }
+  
+  
+}
+onPostAdd = event => {
+  event.preventDefault();
+  if(this.state.post==''){
+      alert('Please check your input fields');
+  }
+  else{
+  axios.post('/api/addPost', null, {
+      params: {
+          post: this.state.post, 
+          post_email: this.state.email,
+          course: this.state.course
+      }
+  })
+  .then(response => response.data)
+  .then(json => this.setState({postdata: json})).then(this.setState({modelPost: !this.state.modelPost}))}
+}
 
   componentDidMount(props){
 
@@ -157,6 +192,14 @@ handleInputChange(event) {
       .then(json => this.setState({postdata: json}))
 
       }
+      handleInputChange(event) {
+        const target = event.target;
+        const name = target.name;
+        const value = target.value;
+        this.setState({
+            [name]: value
+        });
+      }
       
   
   
@@ -187,7 +230,7 @@ handleInputChange(event) {
     var grading = this.state.grading
     var posts = this.state.postdata
     var postrows = posts.map(function(post){
-    return (<Card style={{width:"50%", margin: "auto"}}><CardHeader>{post.post_email} posted: <br/>{post.post}</CardHeader><CardBody><Button data-id={post.post_id} color = "secondary" onClick = {getComments} size = "sm">Comments</Button></CardBody></Card>)
+    return (<Card style={{width:"50%", margin: "auto", marginBottom: "5px"}}><CardHeader>{post.post_email} posted: <br/>{post.post}</CardHeader><CardBody><Button data-id={post.post_id} color = "secondary" onClick = {getComments} size = "sm">Comments</Button></CardBody></Card>)
     })
     
     var scorerows = grading.map(function(grade){
@@ -344,23 +387,42 @@ handleInputChange(event) {
     </Table>
     </CardBody></Card></Jumbotron></TabPane>
     <TabPane tabId = {5}>
-            <Jumbotron style = {{paddingTop: "2rem", paddingRight: "2rem", paddingBottom: "14rem", paddingLeft: "2rem"}}>
+            <Jumbotron style = {{paddingTop: "2rem", paddingRight: "2rem", paddingBottom: "14rem", paddingLeft: "2rem"}}><Button color = "success" style = {{margin: "auto", display:"block", marginLeft: "25%"}} onClick = {this.togglePost}>New Post</Button><br/>
   {postrows}</Jumbotron>
-  <Modal isOpen = {this.state.modelComment} toggle={this.toggle} className={this.props.className}>
+  
+  <Modal isOpen = {this.state.modelComment} toggle={this.toggleComment} className={this.props.className}>
           <ModalBody>
             {commentrows}
             <Form>
       <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-        <Input id = "comment" name = "comment" onChange = {this.handleChange} />
+        <Input onChange = {this.handleInputChange} id = "comment1" name = "comment1" value = {this.state.comment1} type ="string" />
       </FormGroup>
       
     </Form>
           </ModalBody>
           <ModalFooter>
-            <Button color="success" onClick={this.onFormSubmit} >
+            <Button color="success" onClick={this.onCommentAdd} >
               Comment
             </Button>
             <Button color="secondary" onClick={this.toggleComment}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </Modal>
+        <Modal isOpen = {this.state.modelPost} toggle={this.togglePost} className={this.props.className}>
+          <ModalBody>
+            <Form>
+      <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+        <Input onChange = {this.handleInputChange} id = "post" name = "post" value = {this.state.post} type ="string" />
+      </FormGroup>
+      
+    </Form>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="success" onClick={this.onPostAdd} >
+              Post
+            </Button>
+            <Button color="secondary" onClick={this.togglePost}>
               Cancel
             </Button>
           </ModalFooter>

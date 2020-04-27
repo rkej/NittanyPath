@@ -76,7 +76,8 @@ export default class Home extends Component {
     var href_course2 = "studcourse?course=" + coursedata[4] + "&email=" + this.state.email
     var href_course3 = "studcourse?course=" + coursedata[8] + "&email=" + this.state.email
     var href_teaching1 = "TACourse?course=" + teaching + "&section=1" + "&email=" + this.state.email
-    var href_teaching2 = "TACourse?course=" + teaching + "&section=2" + "&email=" + this.state.email
+    var href_teaching2 = "TACourse?course=" + teaching + "&section=2" + "&email=" + this.state.email 
+    var href_profile = "Profile?email=" + this.state.email
     return <div style = {{backgroundColor: "#f9f9f9"}}> <Navbar style = {{backgroundColor: "#491d70"}} dark expand ="md">
     <NavbarBrand href = {href_home}>NittanyPath</NavbarBrand>
     <NavbarToggler onClick={this.toggle}/>
@@ -107,6 +108,7 @@ export default class Home extends Component {
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
+            <NavItem><NavLink href = {href_profile}>Profile</NavLink></NavItem>
             <NavItem>
                 <NavLink href = "/">Logout</NavLink>
             </NavItem>

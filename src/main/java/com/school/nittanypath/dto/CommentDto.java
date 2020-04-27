@@ -1,21 +1,23 @@
 package com.school.nittanypath.dto;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 @Entity
 public class CommentDto {
     @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Integer id;
+    @NotNull
+    @NotEmpty
     private int post_id;
     @NotNull
     @NotEmpty
 
-    private String post;
-    @NotNull
-    @NotEmpty
-    private String post_email;
-    @NotNull
+
     @NotEmpty
     private String comment;
     @NotNull
@@ -24,9 +26,6 @@ public class CommentDto {
     @NotNull
     @NotEmpty
 
-    public String getPost_email(){
-        return post_email;
-    }
 
     public String getComment(){return comment;}
     public void setComment(final String comment){
@@ -43,7 +42,6 @@ public class CommentDto {
     }
     public CommentDto(int post_id, String comment_email, String comment){
         this.post_id=post_id;
-
         this.comment_email = comment_email;
         this.comment = comment;
     }
