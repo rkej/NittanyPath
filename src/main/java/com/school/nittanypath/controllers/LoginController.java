@@ -130,4 +130,27 @@ public class LoginController{
         String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
         userRepo.changepw(email, hashed);
     }
+    @RequestMapping(value = "api/getStud",  method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    List<Object> getStud(@RequestParam("course") String course) {
+
+        return graderepo.getStud(course);
+    }
+    @RequestMapping(value = "api/getAss",  method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    List<Object> getAss(@RequestParam("course") String course) {
+
+        return graderepo.getAss(course);
+    }
+    @RequestMapping(value = "api/getExam",  method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    List<Object> getEx(@RequestParam("course") String course) {
+
+        return graderepo.getEx(course);
+    }
+    @RequestMapping(value = "api/updateAssScore",  method = RequestMethod.POST, produces = {"application/json"})
+    public @ResponseBody
+    void updateAssScore(@RequestParam("course") String course, @RequestParam("hw_num") int hw_num, @RequestParam("hw_grade") int hw_grade, @RequestParam("email") String email) {
+        graderepo.changescore(email, hw_num, hw_grade, course);
+    }
 }

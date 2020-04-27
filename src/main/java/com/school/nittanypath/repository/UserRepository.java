@@ -34,6 +34,6 @@ public interface UserRepository extends JpaRepository<UserDto, Integer> {
     String getDropdead(@Param("course") String course);
     @Modifying
     @Query(value = "UPDATE canvaspath.user_dto SET password = :hashed WHERE email = :email", nativeQuery = true)
-    void changepw(@Param("email") String email, @Param("hashed") String hased);
+    void changepw(@Param("email") String email, @Param("hashed") String hashed);
 
 }

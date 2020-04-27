@@ -7,6 +7,7 @@ import TAHome from './TAHome'
 import ProfHome from './ProfHome'
 import StudCourse from './StudCourse'
 import Profile from './Profile'
+import TACourse from './TACourse'
 import { Route, BrowserRouter as Router } from 'react-router-dom';
 
 import * as serviceWorker from './serviceWorker';
@@ -21,6 +22,7 @@ const routing = (
       <Route path='/dashProf' exact ={false} component={ProfHome} />
       <Route path='/Profile' exact ={false} component={Profile} />
       <Route path='/studcourse' exact ={false} component={StudCourse} />
+      <Route path='/TACourse' exact ={false} component={TACourse} />
     </div>
   </Router>);
 
